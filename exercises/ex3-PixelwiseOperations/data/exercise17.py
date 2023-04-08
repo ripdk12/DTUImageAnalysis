@@ -1,6 +1,7 @@
 from skimage import color
 from skimage.util import img_as_ubyte
 from skimage.util import img_as_float
+import numpy as np
 import time
 import cv2
 
@@ -63,6 +64,7 @@ def capture_from_camera_and_show_images():
         # Change from OpenCV BGR to scikit image RGB
         new_image = new_frame[:, :, ::-1]
         new_image_gray = color.rgb2gray(new_image)
+        new_image_gray = np.power(new_image_gray, 2)
         if process_rgb:
             proc_img = process_rgb_image(new_image)
             # convert back to OpenCV BGR to show it

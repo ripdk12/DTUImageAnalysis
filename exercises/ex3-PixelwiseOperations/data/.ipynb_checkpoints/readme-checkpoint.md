@@ -1,3 +1,8 @@
+# Data and material for exercise 3 - Pixelwise Operations
+
+## Exercise script for pixelwise operations on video
+
+```python
 from skimage import color
 from skimage.util import img_as_ubyte
 from skimage.util import img_as_float
@@ -96,3 +101,6 @@ def capture_from_camera_and_show_images():
 
 if __name__ == '__main__':
     capture_from_camera_and_show_images()
+
+```
+

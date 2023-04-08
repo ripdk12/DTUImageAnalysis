@@ -33,6 +33,18 @@ def process_rgb_image(img):
     r_comp = proc_img[:, :, 0]
     proc_img[:, :, 0] = 1 - r_comp
     return proc_img
+    
+def detect_dtu_signs(img_in, sign):
+    r_comp = img_in[:, :, 0]
+    g_comp = img_in[:, :, 1]
+    b_comp = img_in[:, :, 2]
+    if sign == 'blue':
+        segm = (r_comp < 10) & (g_comp > 85) & (g_comp < 105) & \
+                (b_comp > 180) & (b_comp < 200)
+    if sign == 'red':
+        segm = (r_comp > 160) & (r_comp < 180) & (g_comp > 50) & (g_comp < 80) & \
+                    (b_comp > 50) & (b_comp < 80)
+    return img_as_ubyte(segm)
 
 
 def capture_from_camera_and_show_images():
@@ -53,7 +65,7 @@ def capture_from_camera_and_show_images():
     old_time = time.perf_counter()
     fps = 0
     stop = False
-    process_rgb = False
+    process_rgb = True
     while not stop:
         ret, new_frame = cap.read()
         if not ret:
@@ -64,9 +76,7 @@ def capture_from_camera_and_show_images():
         new_image = new_frame[:, :, ::-1]
         new_image_gray = color.rgb2gray(new_image)
         if process_rgb:
-            proc_img = process_rgb_image(new_image)
-            # convert back to OpenCV BGR to show it
-            proc_img = proc_img[:, :, ::-1]
+            new_image_gray = detect_dtu_signs(new_image, 'red')
         else:
             proc_img = process_gray_image(new_image_gray)
 
@@ -84,7 +94,7 @@ def capture_from_camera_and_show_images():
         # Display the resulting frame
         show_in_moved_window('Input', new_frame, 0, 10)
         show_in_moved_window('Input gray', new_image_gray, 600, 10)
-        show_in_moved_window('Processed image', proc_img, 1200, 10)
+        #show_in_moved_window('Processed image', proc_img, 1200, 10)
 
         if cv2.waitKey(1) == ord('q'):
             stop = True
